@@ -504,7 +504,6 @@ a:focus, a:active {
 }
 
 .clouds {
-  position: absolute;
   width: 100%;
   left: 0;
   top: 77px;
@@ -683,11 +682,12 @@ a:focus, a:active {
 .start-game .start-game-top {
   min-height: 20%;
 }
+
 .start-game .start-game-top .play-full-page {
   display: none;
   border: 3px solid #fff;
   border-radius: 100px;
-  color: #fff;
+  color: #6C33F0;
   width: 260px;
   height: 50px;
   font-size: 28px;
@@ -844,14 +844,14 @@ a:focus, a:active {
   background: #fff;
   padding: 8px 20px;
   border-radius: 4px;
-  color: #55ACEE;
+  color: #597da3;
   text-decoration: none;
   font-size: 18px;
   line-height: 24px;
   display: inline-block;
 }
 .stop-game .score-container .tweet:hover {
-  background-color: #55ACEE;
+  background-color: #597da3;
   color: #fff;
 }
 .stop-game .score-container .tweet i {

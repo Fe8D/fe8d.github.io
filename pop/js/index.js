@@ -22,6 +22,7 @@ class Game {
      * The function is called in the controller and anywhere where I need
      * to recalculate the scale on screen resize or device rotation
      */
+	 
   calculateScale() {
     this.screen = $(window).width(); // screen width
     this.screenHeight = $(window).height();
@@ -110,14 +111,14 @@ class Game {
      * @return {string} grade
      */
   showGrade(score) {
-    if (score > 30) return "Chuck Norris?";else
-    if (score > 25) return "You're da man";else
-    if (score > 20) return "Awesome";else
+    if (score > 30) return "Чак Норрис?";else
+    if (score > 25) return "Да ты читер...";else
+    if (score > 20) return "Потрясающие";else
     if (score > 15) return "Great!";else
     if (score > 13) return "Nice!";else
     if (score > 10) return "Good Job!";else
-    if (score > 5) return "Really?";else
-    return "Poor...";
+    if (score > 5) return "В самом деле?";else
+    return "Плохо...";
   }
 
   start() {
