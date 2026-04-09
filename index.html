@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Стиральные машинки</title>
+    <script src="https://vk.com/js/api/bridge/1.0.0/bridge.js?1"></script>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #e8f0fe;
+            margin: 0;
+            padding: 16px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .machine {
+            border-left: 4px solid #4CAF50;
+        }
+        .machine.special {
+            border-left-color: #ff9800;
+            background: #fff8e1;
+        }
+        .slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .slot {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            flex: 1;
+            min-width: 70px;
+            text-align: center;
+        }
+        .slot.free {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .slot.booked {
+            background: #e0e0e0;
+            cursor: not-allowed;
+        }
+        .loader {
+            text-align: center;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loader">🔄 Загрузка...</div>
+    </div>
+
+    <script>
+        const appDiv = document.getElementById('app');
+        
+        async function init() {
+            if (typeof vkBridge === 'undefined') {
+                appDiv.innerHTML = `
+                    <div class="card" style="background:#ffebee; color:#c62828;">
+                        ❌ Ошибка: VK Bridge не загружен<br><br>
+                        <strong>Откройте приложение через VK:</strong><br>
+                        https://vk.com/app54532794
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                // Инициализация
+                await new Promise((resolve) => {
+                    vkBridge.send('VKWebAppInit', {}, resolve);
+                });
+                
+                // Получаем пользователя
+                const user = await new Promise((resolve) => {
+                    vkBridge.send('VKWebAppGetUserInfo', {}, resolve);
+                });
+                
+                if (user.error) throw new Error(user.error.error_msg);
+                
+                // Показываем интерфейс
+                appDiv.innerHTML = `
+                    <div class="card">
+                        <div class="user">
+                            <img src="${user.photo_100}" onerror="this.src='https://vk.com/images/camera_100.png'">
+                            <div>
+                                <strong>${user.first_name} ${user.last_name}</strong><br>
+                                <small>Добро пожаловать!</small>
+                            </div>
+                        </div>
+                    </div>
+                    ${renderMachines()}
+                `;
+                
+            } catch (error) {
+                appDiv.innerHTML = `
+                    <div class="card" style="background:#ffebee;">
+                        ❌ Ошибка: ${error.message}<br>
+                        <button onclick="location.reload()">Обновить</button>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderMachines() {
+            const machines = [
+                { id: 1, name: 'Стиралка №1', special: '⭐ только для белого белья' },
+                { id: 2, name: 'Стиралка №2', special: '' },
+                { id: 3, name: 'Стиралка №3', special: '' },
+                { id: 4, name: 'Стиралка №4', special: '' },
+                { id: 5, name: 'Стиралка №5', special: '' }
+            ];
+            
+            const times = ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00', '18:30'];
+            
+            return machines.map(m => `
+                <div class="card machine ${m.special ? 'special' : ''}">
+                    <div><strong>🧺 ${m.name}</strong> ${m.special}</div>
+                    <div class="slots">
+                        ${times.map(t => `
+                            <div class="slot free" onclick="book('${m.name}', '${t}')">
+                                ${t}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function book(machine, time) {
+            if (confirm(`Забронировать ${machine} на ${time}?`)) {
+                alert('✅ Бронь создана!');
+            }
+        }
+        
+        init();
+    </script>
+</body>
+</html>
